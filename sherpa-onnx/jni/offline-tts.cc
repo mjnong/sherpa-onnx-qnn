@@ -17,13 +17,13 @@ static OfflineTtsConfig GetOfflineTtsConfig(JNIEnv *env, jobject config) {
   jfieldID fid;
 
   fid = env->GetFieldID(cls, "model",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineTtsModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineTtsModelConfig;");
   jobject model = env->GetObjectField(config, fid);
   jclass model_config_cls = env->GetObjectClass(model);
 
   // vits
   fid = env->GetFieldID(model_config_cls, "vits",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineTtsVitsModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineTtsVitsModelConfig;");
   jobject vits = env->GetObjectField(model, fid);
   jclass vits_cls = env->GetObjectClass(vits);
 
@@ -68,7 +68,7 @@ static OfflineTtsConfig GetOfflineTtsConfig(JNIEnv *env, jobject config) {
 
   // matcha
   fid = env->GetFieldID(model_config_cls, "matcha",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineTtsMatchaModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineTtsMatchaModelConfig;");
   jobject matcha = env->GetObjectField(model, fid);
   jclass matcha_cls = env->GetObjectClass(matcha);
 
@@ -116,7 +116,7 @@ static OfflineTtsConfig GetOfflineTtsConfig(JNIEnv *env, jobject config) {
 
   // kokoro
   fid = env->GetFieldID(model_config_cls, "kokoro",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineTtsKokoroModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineTtsKokoroModelConfig;");
   jobject kokoro = env->GetObjectField(model, fid);
   jclass kokoro_cls = env->GetObjectClass(kokoro);
 
@@ -197,7 +197,7 @@ static OfflineTtsConfig GetOfflineTtsConfig(JNIEnv *env, jobject config) {
 }  // namespace sherpa_onnx
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_OfflineTts_newFromAsset(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_OfflineTts_newFromAsset(
     JNIEnv *env, jobject /*obj*/, jobject asset_manager, jobject _config) {
 #if __ANDROID_API__ >= 9
   AAssetManager *mgr = AAssetManager_fromJava(env, asset_manager);
@@ -219,7 +219,7 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_OfflineTts_newFromAsset(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_OfflineTts_newFromFile(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_OfflineTts_newFromFile(
     JNIEnv *env, jobject /*obj*/, jobject _config) {
   return SafeJNI(
       env, "OfflineTts_newFromFile",
@@ -238,26 +238,26 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_OfflineTts_newFromFile(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflineTts_delete(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_OfflineTts_delete(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   delete reinterpret_cast<sherpa_onnx::OfflineTts *>(ptr);
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jint JNICALL Java_com_k2fsa_sherpa_onnx_OfflineTts_getSampleRate(
+JNIEXPORT jint JNICALL Java_com_edgeai_chatappv2_OfflineTts_getSampleRate(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   return reinterpret_cast<sherpa_onnx::OfflineTts *>(ptr)->SampleRate();
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jint JNICALL Java_com_k2fsa_sherpa_onnx_OfflineTts_getNumSpeakers(
+JNIEXPORT jint JNICALL Java_com_edgeai_chatappv2_OfflineTts_getNumSpeakers(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   return reinterpret_cast<sherpa_onnx::OfflineTts *>(ptr)->NumSpeakers();
 }
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineTts_generateImpl(JNIEnv *env, jobject /*obj*/,
+Java_com_edgeai_chatappv2_OfflineTts_generateImpl(JNIEnv *env, jobject /*obj*/,
                                                    jlong ptr, jstring text,
                                                    jint sid, jfloat speed) {
   const char *p_text = env->GetStringUTFChars(text, nullptr);
@@ -282,7 +282,7 @@ Java_com_k2fsa_sherpa_onnx_OfflineTts_generateImpl(JNIEnv *env, jobject /*obj*/,
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineTts_generateWithCallbackImpl(
+Java_com_edgeai_chatappv2_OfflineTts_generateWithCallbackImpl(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jstring text, jint sid,
     jfloat speed, jobject callback) {
   const char *p_text = env->GetStringUTFChars(text, nullptr);

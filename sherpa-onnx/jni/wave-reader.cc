@@ -37,7 +37,7 @@ static jobjectArray ReadWaveImpl(JNIEnv *env, std::istream &is,
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_WaveReader_00024Companion_readWaveFromFile(
+Java_com_edgeai_chatappv2_WaveReader_00024Companion_readWaveFromFile(
     JNIEnv *env, jclass /*cls*/, jstring filename) {
   const char *p_filename = env->GetStringUTFChars(filename, nullptr);
   std::ifstream is(p_filename, std::ios::binary);
@@ -51,16 +51,16 @@ Java_com_k2fsa_sherpa_onnx_WaveReader_00024Companion_readWaveFromFile(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_WaveReader_readWaveFromFile(JNIEnv *env,
+Java_com_edgeai_chatappv2_WaveReader_readWaveFromFile(JNIEnv *env,
                                                        jclass /*obj*/,
                                                        jstring filename) {
-  return Java_com_k2fsa_sherpa_onnx_WaveReader_00024Companion_readWaveFromFile(
+  return Java_com_edgeai_chatappv2_WaveReader_00024Companion_readWaveFromFile(
       env, nullptr, filename);
 }
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_WaveReader_00024Companion_readWaveFromAsset(
+Java_com_edgeai_chatappv2_WaveReader_00024Companion_readWaveFromAsset(
     JNIEnv *env, jclass /*cls*/, jobject asset_manager, jstring filename) {
   const char *p_filename = env->GetStringUTFChars(filename, nullptr);
 #if __ANDROID_API__ >= 9

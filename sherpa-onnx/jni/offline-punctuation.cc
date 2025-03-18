@@ -17,7 +17,7 @@ static OfflinePunctuationConfig GetOfflinePunctuationConfig(JNIEnv *env,
   jfieldID fid;
 
   fid = env->GetFieldID(
-      cls, "model", "Lcom/k2fsa/sherpa/onnx/OfflinePunctuationModelConfig;");
+      cls, "model", "Lcom/edgeai/chatappv2/OfflinePunctuationModelConfig;");
   jobject model_config = env->GetObjectField(config, fid);
   jclass model_config_cls = env->GetObjectClass(model_config);
 
@@ -47,7 +47,7 @@ static OfflinePunctuationConfig GetOfflinePunctuationConfig(JNIEnv *env,
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jlong JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflinePunctuation_newFromAsset(
+Java_com_edgeai_chatappv2_OfflinePunctuation_newFromAsset(
     JNIEnv *env, jobject /*obj*/, jobject asset_manager, jobject _config) {
 #if __ANDROID_API__ >= 9
   AAssetManager *mgr = AAssetManager_fromJava(env, asset_manager);
@@ -70,7 +70,7 @@ Java_com_k2fsa_sherpa_onnx_OfflinePunctuation_newFromAsset(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jlong JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflinePunctuation_newFromFile(JNIEnv *env,
+Java_com_edgeai_chatappv2_OfflinePunctuation_newFromFile(JNIEnv *env,
                                                           jobject /*obj*/,
                                                           jobject _config) {
   auto config = sherpa_onnx::GetOfflinePunctuationConfig(env, _config);
@@ -87,14 +87,14 @@ Java_com_k2fsa_sherpa_onnx_OfflinePunctuation_newFromFile(JNIEnv *env,
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflinePunctuation_delete(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_OfflinePunctuation_delete(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   delete reinterpret_cast<sherpa_onnx::OfflinePunctuation *>(ptr);
 }
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jstring JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflinePunctuation_addPunctuation(JNIEnv *env,
+Java_com_edgeai_chatappv2_OfflinePunctuation_addPunctuation(JNIEnv *env,
                                                              jobject /*obj*/,
                                                              jlong ptr,
                                                              jstring text) {

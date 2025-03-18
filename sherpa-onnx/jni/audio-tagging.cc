@@ -15,13 +15,13 @@ static AudioTaggingConfig GetAudioTaggingConfig(JNIEnv *env, jobject config) {
   jclass cls = env->GetObjectClass(config);
 
   jfieldID fid = env->GetFieldID(
-      cls, "model", "Lcom/k2fsa/sherpa/onnx/AudioTaggingModelConfig;");
+      cls, "model", "Lcom/edgeai/chatappv2/AudioTaggingModelConfig;");
   jobject model = env->GetObjectField(config, fid);
   jclass model_cls = env->GetObjectClass(model);
 
   fid = env->GetFieldID(
       model_cls, "zipformer",
-      "Lcom/k2fsa/sherpa/onnx/OfflineZipformerAudioTaggingModelConfig;");
+      "Lcom/edgeai/chatappv2/OfflineZipformerAudioTaggingModelConfig;");
   jobject zipformer = env->GetObjectField(model, fid);
   jclass zipformer_cls = env->GetObjectClass(zipformer);
 
@@ -64,7 +64,7 @@ static AudioTaggingConfig GetAudioTaggingConfig(JNIEnv *env, jobject config) {
 }  // namespace sherpa_onnx
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_AudioTagging_newFromAsset(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_AudioTagging_newFromAsset(
     JNIEnv *env, jobject /*obj*/, jobject asset_manager, jobject _config) {
 #if __ANDROID_API__ >= 9
   AAssetManager *mgr = AAssetManager_fromJava(env, asset_manager);
@@ -88,7 +88,7 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_AudioTagging_newFromAsset(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_AudioTagging_newFromFile(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_AudioTagging_newFromFile(
     JNIEnv *env, jobject /*obj*/, jobject _config) {
   auto config = sherpa_onnx::GetAudioTaggingConfig(env, _config);
   SHERPA_ONNX_LOGE("audio tagging newFromFile config:\n%s",
@@ -105,27 +105,27 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_AudioTagging_newFromFile(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_AudioTagging_delete(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_AudioTagging_delete(
     JNIEnv *env, jobject /*obj*/, jlong ptr) {
   delete reinterpret_cast<sherpa_onnx::AudioTagging *>(ptr);
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_AudioTagging_createStream(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_AudioTagging_createStream(
     JNIEnv *env, jobject /*obj*/, jlong ptr) {
   auto tagger = reinterpret_cast<sherpa_onnx::AudioTagging *>(ptr);
   std::unique_ptr<sherpa_onnx::OfflineStream> s = tagger->CreateStream();
 
   // The user is responsible to free the returned pointer.
   //
-  // See Java_com_k2fsa_sherpa_onnx_OfflineStream_delete() from
+  // See Java_com_edgeai_chatappv2_OfflineStream_delete() from
   // ./offline-stream.cc
   sherpa_onnx::OfflineStream *p = s.release();
   return (jlong)p;
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jobjectArray JNICALL Java_com_k2fsa_sherpa_onnx_AudioTagging_compute(
+JNIEXPORT jobjectArray JNICALL Java_com_edgeai_chatappv2_AudioTagging_compute(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jlong streamPtr, jint top_k) {
   auto tagger = reinterpret_cast<sherpa_onnx::AudioTagging *>(ptr);
   auto stream = reinterpret_cast<sherpa_onnx::OfflineStream *>(streamPtr);

@@ -19,13 +19,13 @@ static OfflineSpeakerDiarizationConfig GetOfflineSpeakerDiarizationConfig(
   //---------- segmentation ----------
   fid = env->GetFieldID(
       cls, "segmentation",
-      "Lcom/k2fsa/sherpa/onnx/OfflineSpeakerSegmentationModelConfig;");
+      "Lcom/edgeai/chatappv2/OfflineSpeakerSegmentationModelConfig;");
   jobject segmentation_config = env->GetObjectField(config, fid);
   jclass segmentation_config_cls = env->GetObjectClass(segmentation_config);
 
   fid = env->GetFieldID(
       segmentation_config_cls, "pyannote",
-      "Lcom/k2fsa/sherpa/onnx/OfflineSpeakerSegmentationPyannoteModelConfig;");
+      "Lcom/edgeai/chatappv2/OfflineSpeakerSegmentationPyannoteModelConfig;");
   jobject pyannote_config = env->GetObjectField(segmentation_config, fid);
   jclass pyannote_config_cls = env->GetObjectClass(pyannote_config);
 
@@ -51,7 +51,7 @@ static OfflineSpeakerDiarizationConfig GetOfflineSpeakerDiarizationConfig(
   //---------- embedding ----------
   fid = env->GetFieldID(
       cls, "embedding",
-      "Lcom/k2fsa/sherpa/onnx/SpeakerEmbeddingExtractorConfig;");
+      "Lcom/edgeai/chatappv2/SpeakerEmbeddingExtractorConfig;");
   jobject embedding_config = env->GetObjectField(config, fid);
   jclass embedding_config_cls = env->GetObjectClass(embedding_config);
 
@@ -75,7 +75,7 @@ static OfflineSpeakerDiarizationConfig GetOfflineSpeakerDiarizationConfig(
 
   //---------- clustering ----------
   fid = env->GetFieldID(cls, "clustering",
-                        "Lcom/k2fsa/sherpa/onnx/FastClusteringConfig;");
+                        "Lcom/edgeai/chatappv2/FastClusteringConfig;");
   jobject clustering_config = env->GetObjectField(config, fid);
   jclass clustering_config_cls = env->GetObjectClass(clustering_config);
 
@@ -99,7 +99,7 @@ static OfflineSpeakerDiarizationConfig GetOfflineSpeakerDiarizationConfig(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jlong JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_newFromAsset(
+Java_com_edgeai_chatappv2_OfflineSpeakerDiarization_newFromAsset(
     JNIEnv *env, jobject /*obj*/, jobject asset_manager, jobject _config) {
 #if __ANDROID_API__ >= 9
   AAssetManager *mgr = AAssetManager_fromJava(env, asset_manager);
@@ -123,7 +123,7 @@ Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_newFromAsset(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jlong JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_newFromFile(
+Java_com_edgeai_chatappv2_OfflineSpeakerDiarization_newFromFile(
     JNIEnv *env, jobject /*obj*/, jobject _config) {
   auto config = sherpa_onnx::GetOfflineSpeakerDiarizationConfig(env, _config);
   SHERPA_ONNX_LOGE("config:\n%s", config.ToString().c_str());
@@ -140,7 +140,7 @@ Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_newFromFile(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT void JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_setConfig(
+Java_com_edgeai_chatappv2_OfflineSpeakerDiarization_setConfig(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jobject _config) {
   auto config = sherpa_onnx::GetOfflineSpeakerDiarizationConfig(env, _config);
   SHERPA_ONNX_LOGE("config:\n%s", config.ToString().c_str());
@@ -151,7 +151,7 @@ Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_setConfig(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT void JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_delete(JNIEnv * /*env*/,
+Java_com_edgeai_chatappv2_OfflineSpeakerDiarization_delete(JNIEnv * /*env*/,
                                                             jobject /*obj*/,
                                                             jlong ptr) {
   delete reinterpret_cast<sherpa_onnx::OfflineSpeakerDiarization *>(ptr);
@@ -162,7 +162,7 @@ static jobjectArray ProcessImpl(
     const std::vector<sherpa_onnx::OfflineSpeakerDiarizationSegment>
         &segments) {
   jclass cls =
-      env->FindClass("com/k2fsa/sherpa/onnx/OfflineSpeakerDiarizationSegment");
+      env->FindClass("com/edgeai/chatappv2/OfflineSpeakerDiarizationSegment");
 
   jobjectArray obj_arr =
       (jobjectArray)env->NewObjectArray(segments.size(), cls, nullptr);
@@ -181,7 +181,7 @@ static jobjectArray ProcessImpl(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_process(
+Java_com_edgeai_chatappv2_OfflineSpeakerDiarization_process(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jfloatArray samples) {
   auto sd = reinterpret_cast<sherpa_onnx::OfflineSpeakerDiarization *>(ptr);
 
@@ -195,7 +195,7 @@ Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_process(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_processWithCallback(
+Java_com_edgeai_chatappv2_OfflineSpeakerDiarization_processWithCallback(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jfloatArray samples,
     jobject callback, jlong arg) {
   std::function<int32_t(int32_t, int32_t, void *)> callback_wrapper =
@@ -230,7 +230,7 @@ Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_processWithCallback(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jint JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineSpeakerDiarization_getSampleRate(
+Java_com_edgeai_chatappv2_OfflineSpeakerDiarization_getSampleRate(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   return reinterpret_cast<sherpa_onnx::OfflineSpeakerDiarization *>(ptr)
       ->SampleRate();

@@ -4,7 +4,7 @@
 out_dir := build
 out_jar := $(out_dir)/sherpa-onnx.jar
 
-package_dir := com/k2fsa/sherpa/onnx
+package_dir := com/edgeai/chatappv2
 
 java_files := WaveReader.java
 java_files += WaveWriter.java

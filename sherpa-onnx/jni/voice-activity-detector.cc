@@ -16,7 +16,7 @@ static VadModelConfig GetVadModelConfig(JNIEnv *env, jobject config) {
 
   // silero_vad
   fid = env->GetFieldID(cls, "sileroVadModelConfig",
-                        "Lcom/k2fsa/sherpa/onnx/SileroVadModelConfig;");
+                        "Lcom/edgeai/chatappv2/SileroVadModelConfig;");
   jobject silero_vad_config = env->GetObjectField(config, fid);
   jclass silero_vad_config_cls = env->GetObjectClass(silero_vad_config);
 
@@ -65,7 +65,7 @@ static VadModelConfig GetVadModelConfig(JNIEnv *env, jobject config) {
 }  // namespace sherpa_onnx
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_Vad_newFromAsset(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_Vad_newFromAsset(
     JNIEnv *env, jobject /*obj*/, jobject asset_manager, jobject _config) {
 #if __ANDROID_API__ >= 9
   AAssetManager *mgr = AAssetManager_fromJava(env, asset_manager);
@@ -87,7 +87,7 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_Vad_newFromAsset(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_Vad_newFromFile(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_Vad_newFromFile(
     JNIEnv *env, jobject /*obj*/, jobject _config) {
   auto config = sherpa_onnx::GetVadModelConfig(env, _config);
   SHERPA_ONNX_LOGE("config:\n%s", config.ToString().c_str());
@@ -103,14 +103,14 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_Vad_newFromFile(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_delete(JNIEnv * /*env*/,
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_Vad_delete(JNIEnv * /*env*/,
                                                              jobject /*obj*/,
                                                              jlong ptr) {
   delete reinterpret_cast<sherpa_onnx::VoiceActivityDetector *>(ptr);
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_acceptWaveform(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_Vad_acceptWaveform(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jfloatArray samples) {
   SafeJNI(env, "Vad_acceptWaveform", [&] {
     if (!ValidatePointer(env, ptr, "Vad_acceptWaveform",
@@ -129,7 +129,7 @@ JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_acceptWaveform(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT bool JNICALL Java_com_k2fsa_sherpa_onnx_Vad_empty(JNIEnv * /*env*/,
+JNIEXPORT bool JNICALL Java_com_edgeai_chatappv2_Vad_empty(JNIEnv * /*env*/,
                                                             jobject /*obj*/,
                                                             jlong ptr) {
   auto model = reinterpret_cast<sherpa_onnx::VoiceActivityDetector *>(ptr);
@@ -137,7 +137,7 @@ JNIEXPORT bool JNICALL Java_com_k2fsa_sherpa_onnx_Vad_empty(JNIEnv * /*env*/,
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_pop(JNIEnv * /*env*/,
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_Vad_pop(JNIEnv * /*env*/,
                                                           jobject /*obj*/,
                                                           jlong ptr) {
   auto model = reinterpret_cast<sherpa_onnx::VoiceActivityDetector *>(ptr);
@@ -145,7 +145,7 @@ JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_pop(JNIEnv * /*env*/,
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_clear(JNIEnv * /*env*/,
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_Vad_clear(JNIEnv * /*env*/,
                                                             jobject /*obj*/,
                                                             jlong ptr) {
   auto model = reinterpret_cast<sherpa_onnx::VoiceActivityDetector *>(ptr);
@@ -154,7 +154,7 @@ JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_clear(JNIEnv * /*env*/,
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_Vad_front(JNIEnv *env, jobject /*obj*/, jlong ptr) {
+Java_com_edgeai_chatappv2_Vad_front(JNIEnv *env, jobject /*obj*/, jlong ptr) {
   const auto &front =
       reinterpret_cast<sherpa_onnx::VoiceActivityDetector *>(ptr)->Front();
 
@@ -172,14 +172,14 @@ Java_com_k2fsa_sherpa_onnx_Vad_front(JNIEnv *env, jobject /*obj*/, jlong ptr) {
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT bool JNICALL Java_com_k2fsa_sherpa_onnx_Vad_isSpeechDetected(
+JNIEXPORT bool JNICALL Java_com_edgeai_chatappv2_Vad_isSpeechDetected(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   auto model = reinterpret_cast<sherpa_onnx::VoiceActivityDetector *>(ptr);
   return model->IsSpeechDetected();
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_reset(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_Vad_reset(
     JNIEnv *env, jobject /*obj*/, jlong ptr) {
   SafeJNI(env, "Vad_reset", [&] {
     if (!ValidatePointer(env, ptr, "Vad_reset",
@@ -193,7 +193,7 @@ JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_reset(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_Vad_flush(JNIEnv * /*env*/,
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_Vad_flush(JNIEnv * /*env*/,
                                                             jobject /*obj*/,
                                                             jlong ptr) {
   auto model = reinterpret_cast<sherpa_onnx::VoiceActivityDetector *>(ptr);

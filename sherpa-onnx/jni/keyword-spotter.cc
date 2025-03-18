@@ -39,7 +39,7 @@ static KeywordSpotterConfig GetKwsConfig(JNIEnv *env, jobject config) {
 
   //---------- feat config ----------
   fid = env->GetFieldID(cls, "featConfig",
-                        "Lcom/k2fsa/sherpa/onnx/FeatureConfig;");
+                        "Lcom/edgeai/chatappv2/FeatureConfig;");
   jobject feat_config = env->GetObjectField(config, fid);
   jclass feat_config_cls = env->GetObjectClass(feat_config);
 
@@ -51,13 +51,13 @@ static KeywordSpotterConfig GetKwsConfig(JNIEnv *env, jobject config) {
 
   //---------- model config ----------
   fid = env->GetFieldID(cls, "modelConfig",
-                        "Lcom/k2fsa/sherpa/onnx/OnlineModelConfig;");
+                        "Lcom/edgeai/chatappv2/OnlineModelConfig;");
   jobject model_config = env->GetObjectField(config, fid);
   jclass model_config_cls = env->GetObjectClass(model_config);
 
   // transducer
   fid = env->GetFieldID(model_config_cls, "transducer",
-                        "Lcom/k2fsa/sherpa/onnx/OnlineTransducerModelConfig;");
+                        "Lcom/edgeai/chatappv2/OnlineTransducerModelConfig;");
   jobject transducer_config = env->GetObjectField(model_config, fid);
   jclass transducer_config_cls = env->GetObjectClass(transducer_config);
 
@@ -109,7 +109,7 @@ static KeywordSpotterConfig GetKwsConfig(JNIEnv *env, jobject config) {
 }  // namespace sherpa_onnx
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_newFromAsset(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_KeywordSpotter_newFromAsset(
     JNIEnv *env, jobject /*obj*/, jobject asset_manager, jobject _config) {
 #if __ANDROID_API__ >= 9
   AAssetManager *mgr = AAssetManager_fromJava(env, asset_manager);
@@ -131,7 +131,7 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_newFromAsset(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_newFromFile(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_KeywordSpotter_newFromFile(
     JNIEnv *env, jobject /*obj*/, jobject _config) {
   auto config = sherpa_onnx::GetKwsConfig(env, _config);
   SHERPA_ONNX_LOGE("config:\n%s", config.ToString().c_str());
@@ -147,13 +147,13 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_newFromFile(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_delete(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_KeywordSpotter_delete(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   delete reinterpret_cast<sherpa_onnx::KeywordSpotter *>(ptr);
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_decode(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_KeywordSpotter_decode(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr, jlong stream_ptr) {
   auto kws = reinterpret_cast<sherpa_onnx::KeywordSpotter *>(ptr);
   auto stream = reinterpret_cast<sherpa_onnx::OnlineStream *>(stream_ptr);
@@ -162,7 +162,7 @@ JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_decode(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_reset(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_KeywordSpotter_reset(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr, jlong stream_ptr) {
   auto kws = reinterpret_cast<sherpa_onnx::KeywordSpotter *>(ptr);
   auto stream = reinterpret_cast<sherpa_onnx::OnlineStream *>(stream_ptr);
@@ -171,7 +171,7 @@ JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_reset(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_createStream(
+JNIEXPORT jlong JNICALL Java_com_edgeai_chatappv2_KeywordSpotter_createStream(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jstring keywords) {
   auto kws = reinterpret_cast<sherpa_onnx::KeywordSpotter *>(ptr);
 
@@ -188,14 +188,14 @@ JNIEXPORT jlong JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_createStream(
 
   // The user is responsible to free the returned pointer.
   //
-  // See Java_com_k2fsa_sherpa_onnx_OfflineStream_delete() from
+  // See Java_com_edgeai_chatappv2_OfflineStream_delete() from
   // ./offline-stream.cc
   sherpa_onnx::OnlineStream *ans = stream.release();
   return (jlong)ans;
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT bool JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_isReady(
+JNIEXPORT bool JNICALL Java_com_edgeai_chatappv2_KeywordSpotter_isReady(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr, jlong stream_ptr) {
   auto kws = reinterpret_cast<sherpa_onnx::KeywordSpotter *>(ptr);
   auto stream = reinterpret_cast<sherpa_onnx::OnlineStream *>(stream_ptr);
@@ -205,7 +205,7 @@ JNIEXPORT bool JNICALL Java_com_k2fsa_sherpa_onnx_KeywordSpotter_isReady(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_KeywordSpotter_getResult(JNIEnv *env,
+Java_com_edgeai_chatappv2_KeywordSpotter_getResult(JNIEnv *env,
                                                     jobject /*obj*/, jlong ptr,
                                                     jlong stream_ptr) {
   auto kws = reinterpret_cast<sherpa_onnx::KeywordSpotter *>(ptr);

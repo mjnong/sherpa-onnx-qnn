@@ -6,7 +6,7 @@
 #include "sherpa-onnx/jni/common.h"
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT bool JNICALL Java_com_k2fsa_sherpa_onnx_WaveWriter_writeWaveToFile(
+JNIEXPORT bool JNICALL Java_com_edgeai_chatappv2_WaveWriter_writeWaveToFile(
     JNIEnv *env, jclass /*obj*/, jstring filename, jfloatArray samples,
     jint sample_rate) {
   jfloat *p = env->GetFloatArrayElements(samples, nullptr);

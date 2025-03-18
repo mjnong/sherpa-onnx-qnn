@@ -51,7 +51,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
   //---------- feat config ----------
   fid = env->GetFieldID(cls, "featConfig",
-                        "Lcom/k2fsa/sherpa/onnx/FeatureConfig;");
+                        "Lcom/edgeai/chatappv2/FeatureConfig;");
   jobject feat_config = env->GetObjectField(config, fid);
   jclass feat_config_cls = env->GetObjectClass(feat_config);
 
@@ -63,7 +63,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
   //---------- model config ----------
   fid = env->GetFieldID(cls, "modelConfig",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineModelConfig;");
   jobject model_config = env->GetObjectField(config, fid);
   jclass model_config_cls = env->GetObjectClass(model_config);
 
@@ -105,7 +105,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
   // transducer
   fid = env->GetFieldID(model_config_cls, "transducer",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineTransducerModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineTransducerModelConfig;");
   jobject transducer_config = env->GetObjectField(model_config, fid);
   jclass transducer_config_cls = env->GetObjectClass(transducer_config);
 
@@ -129,7 +129,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
   // paraformer
   fid = env->GetFieldID(model_config_cls, "paraformer",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineParaformerModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineParaformerModelConfig;");
   jobject paraformer_config = env->GetObjectField(model_config, fid);
   jclass paraformer_config_cls = env->GetObjectClass(paraformer_config);
 
@@ -142,7 +142,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
   // whisper
   fid = env->GetFieldID(model_config_cls, "whisper",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineWhisperModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineWhisperModelConfig;");
   jobject whisper_config = env->GetObjectField(model_config, fid);
   jclass whisper_config_cls = env->GetObjectClass(whisper_config);
 
@@ -176,7 +176,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
   // FireRedAsr
   fid = env->GetFieldID(model_config_cls, "fireRedAsr",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineFireRedAsrModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineFireRedAsrModelConfig;");
   jobject fire_red_asr_config = env->GetObjectField(model_config, fid);
   jclass fire_red_asr_config_cls = env->GetObjectClass(fire_red_asr_config);
 
@@ -196,7 +196,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
   // moonshine
   fid = env->GetFieldID(model_config_cls, "moonshine",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineMoonshineModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineMoonshineModelConfig;");
   jobject moonshine_config = env->GetObjectField(model_config, fid);
   jclass moonshine_config_cls = env->GetObjectClass(moonshine_config);
 
@@ -229,7 +229,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
   // sense voice
   fid = env->GetFieldID(model_config_cls, "senseVoice",
-                        "Lcom/k2fsa/sherpa/onnx/OfflineSenseVoiceModelConfig;");
+                        "Lcom/edgeai/chatappv2/OfflineSenseVoiceModelConfig;");
   jobject sense_voice_config = env->GetObjectField(model_config, fid);
   jclass sense_voice_config_cls = env->GetObjectClass(sense_voice_config);
 
@@ -254,7 +254,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
   // nemo
   fid = env->GetFieldID(
       model_config_cls, "nemo",
-      "Lcom/k2fsa/sherpa/onnx/OfflineNemoEncDecCtcModelConfig;");
+      "Lcom/edgeai/chatappv2/OfflineNemoEncDecCtcModelConfig;");
   jobject nemo_config = env->GetObjectField(model_config, fid);
   jclass nemo_config_cls = env->GetObjectClass(nemo_config);
 
@@ -278,7 +278,7 @@ static OfflineRecognizerConfig GetOfflineConfig(JNIEnv *env, jobject config) {
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jlong JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_newFromAsset(JNIEnv *env,
+Java_com_edgeai_chatappv2_OfflineRecognizer_newFromAsset(JNIEnv *env,
                                                           jobject /*obj*/,
                                                           jobject asset_manager,
                                                           jobject _config) {
@@ -303,7 +303,7 @@ Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_newFromAsset(JNIEnv *env,
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jlong JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_newFromFile(JNIEnv *env,
+Java_com_edgeai_chatappv2_OfflineRecognizer_newFromFile(JNIEnv *env,
                                                          jobject /*obj*/,
                                                          jobject _config) {
   auto config = sherpa_onnx::GetOfflineConfig(env, _config);
@@ -320,7 +320,7 @@ Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_newFromFile(JNIEnv *env,
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_setConfig(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_OfflineRecognizer_setConfig(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jobject _config) {
   auto config = sherpa_onnx::GetOfflineConfig(env, _config);
   SHERPA_ONNX_LOGE("config:\n%s", config.ToString().c_str());
@@ -330,14 +330,14 @@ JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_setConfig(
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_delete(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_OfflineRecognizer_delete(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   delete reinterpret_cast<sherpa_onnx::OfflineRecognizer *>(ptr);
 }
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jlong JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_createStream(JNIEnv * /*env*/,
+Java_com_edgeai_chatappv2_OfflineRecognizer_createStream(JNIEnv * /*env*/,
                                                           jobject /*obj*/,
                                                           jlong ptr) {
   auto recognizer = reinterpret_cast<sherpa_onnx::OfflineRecognizer *>(ptr);
@@ -345,14 +345,14 @@ Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_createStream(JNIEnv * /*env*/,
 
   // The user is responsible to free the returned pointer.
   //
-  // See Java_com_k2fsa_sherpa_onnx_OfflineStream_delete() from
+  // See Java_com_edgeai_chatappv2_OfflineStream_delete() from
   // ./offline-stream.cc
   sherpa_onnx::OfflineStream *p = s.release();
   return (jlong)p;
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_decode(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_OfflineRecognizer_decode(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jlong streamPtr) {
   SafeJNI(env, "OfflineRecognizer_decode", [&] {
     if (!ValidatePointer(env, ptr, "OfflineRecognizer_decode",
@@ -370,7 +370,7 @@ JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_decode(
 
 SHERPA_ONNX_EXTERN_C
 JNIEXPORT jobjectArray JNICALL
-Java_com_k2fsa_sherpa_onnx_OfflineRecognizer_getResult(JNIEnv *env,
+Java_com_edgeai_chatappv2_OfflineRecognizer_getResult(JNIEnv *env,
                                                        jobject /*obj*/,
                                                        jlong streamPtr) {
   auto stream = reinterpret_cast<sherpa_onnx::OfflineStream *>(streamPtr);

@@ -7,13 +7,13 @@
 #include "sherpa-onnx/jni/common.h"
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflineStream_delete(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_OfflineStream_delete(
     JNIEnv * /*env*/, jobject /*obj*/, jlong ptr) {
   delete reinterpret_cast<sherpa_onnx::OfflineStream *>(ptr);
 }
 
 SHERPA_ONNX_EXTERN_C
-JNIEXPORT void JNICALL Java_com_k2fsa_sherpa_onnx_OfflineStream_acceptWaveform(
+JNIEXPORT void JNICALL Java_com_edgeai_chatappv2_OfflineStream_acceptWaveform(
     JNIEnv *env, jobject /*obj*/, jlong ptr, jfloatArray samples,
     jint sample_rate) {
   auto stream = reinterpret_cast<sherpa_onnx::OfflineStream *>(ptr);

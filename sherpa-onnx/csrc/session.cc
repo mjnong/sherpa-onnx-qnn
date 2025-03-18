@@ -15,7 +15,7 @@
 #include "coreml_provider_factory.h"  // NOLINT
 #endif
 
-#if __ANDROID_API__ >= 27
+#if defined(SHERPA_ONNX_ENABLE_NNAPI)
 #include "nnapi_provider_factory.h"  // NOLINT
 #endif
 
@@ -206,8 +206,8 @@ Ort::SessionOptions GetSessionOptionsImpl(
       break;
     }
     case Provider::kNNAPI: {
-#if __ANDROID_API__ >= 27
-      SHERPA_ONNX_LOGE("Current API level %d ", (int32_t)__ANDROID_API__);
+#if defined(SHERPA_ONNX_ENABLE_NNAPI)
+      SHERPA_ONNX_LOGE("Using NNAPI provider");
 
       // Please see
       // https://onnxruntime.ai/docs/execution-providers/NNAPI-ExecutionProvider.html#usage
@@ -227,15 +227,10 @@ Ort::SessionOptions GetSessionOptionsImpl(
             msg, os.str().c_str());
         api.ReleaseStatus(status);
       } else {
-        SHERPA_ONNX_LOGE("Use nnapi");
+        SHERPA_ONNX_LOGE("Using NNAPI provider");
       }
-#elif defined(__ANDROID_API__)
-      SHERPA_ONNX_LOGE(
-          "Android NNAPI requires API level >= 27. Current API level %d "
-          "Fallback to cpu!",
-          (int32_t)__ANDROID_API__);
 #else
-      SHERPA_ONNX_LOGE("NNAPI is for Android only. Fallback to cpu");
+      SHERPA_ONNX_LOGE("NNAPI support is not enabled. Fallback to cpu");
 #endif
       break;
     }
