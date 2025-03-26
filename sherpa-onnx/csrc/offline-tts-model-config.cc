@@ -12,6 +12,7 @@ void OfflineTtsModelConfig::Register(ParseOptions *po) {
   vits.Register(po);
   matcha.Register(po);
   kokoro.Register(po);
+  provider_config.Register(po);
 
   po->Register("num-threads", &num_threads,
                "Number of threads to run the neural network");
@@ -37,6 +38,10 @@ bool OfflineTtsModelConfig::Validate() const {
     return matcha.Validate();
   }
 
+  if (!provider_config.Validate()) {
+    return false;
+  }
+
   return kokoro.Validate();
 }
 
@@ -50,6 +55,7 @@ std::string OfflineTtsModelConfig::ToString() const {
   os << "num_threads=" << num_threads << ", ";
   os << "debug=" << (debug ? "True" : "False") << ", ";
   os << "provider=\"" << provider << "\")";
+  os << "provider_config=" << provider_config.ToString();
 
   return os.str();
 }

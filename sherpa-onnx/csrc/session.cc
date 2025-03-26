@@ -8,9 +8,12 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <unordered_map>
+#include <sstream>
 
 #include "sherpa-onnx/csrc/macros.h"
 #include "sherpa-onnx/csrc/provider.h"
+#include "sherpa-onnx/csrc/offline-tts-model-config.h"
 #if defined(__APPLE__)
 #include "coreml_provider_factory.h"  // NOLINT
 #endif
@@ -33,6 +36,27 @@ static void OrtStatusFailure(OrtStatus *status, const char *s) {
       "Available providers: %s. Fallback to cuda",
       msg, s);
   api.ReleaseStatus(status);
+}
+
+// Explicit specialization for OfflineTtsModelConfig
+Ort::SessionOptions GetSessionOptions(const OfflineTtsModelConfig &config) {
+  SHERPA_ONNX_LOGE("GetSessionOptions for OfflineTtsModelConfig: %s", config.ToString().c_str());
+  
+  // If provider is "qnn" and we have QNN configuration, use provider_config
+  if (config.provider == "qnn" && !config.provider_config.qnn_config.json_config.empty()) {
+    SHERPA_ONNX_LOGE("Using QNN provider with config");
+    return GetSessionOptionsImpl(config.num_threads, config.provider, &config.provider_config);
+  }
+  
+  // If provider is "trt" or "cuda" and device ID is specified
+  if ((config.provider == "trt" || config.provider == "cuda") && config.provider_config.device != 0) {
+    SHERPA_ONNX_LOGE("Using %s provider with device ID: %d", 
+                    config.provider.c_str(), config.provider_config.device);
+    return GetSessionOptionsImpl(config.num_threads, config.provider, &config.provider_config);
+  }
+  
+  // Use simple provider name for other cases
+  return GetSessionOptionsImpl(config.num_threads, config.provider);
 }
 
 Ort::SessionOptions GetSessionOptionsImpl(
@@ -232,6 +256,101 @@ Ort::SessionOptions GetSessionOptionsImpl(
 #else
       SHERPA_ONNX_LOGE("NNAPI support is not enabled. Fallback to cpu");
 #endif
+      break;
+    }
+    case Provider::kQNN: {
+      SHERPA_ONNX_LOGE("Checking QNN provider support");
+      
+      if (provider_config == nullptr) {
+        SHERPA_ONNX_LOGE("QNN provider requires configuration. Fallback to cpu!");
+        break;
+      }
+
+      auto qnn_config = provider_config->qnn_config;
+      
+      // Check if QNN is in the available providers list
+      if (std::find(available_providers.begin(), available_providers.end(),
+                    "QNNExecutionProvider") != available_providers.end()) {
+        
+        // Check if we have a JSON configuration
+        if (!qnn_config.json_config.empty()) {
+          // Parse JSON config and use it with AppendExecutionProvider
+          try {
+            std::unordered_map<std::string, std::string> options;
+            SHERPA_ONNX_LOGE("Using QNN JSON config: %s", qnn_config.json_config.c_str());
+            
+            // Parse the JSON string to populate options
+            std::string content = qnn_config.json_config;
+            
+            // Simple JSON parsing
+            if (content.front() == '{' && content.back() == '}') {
+              // Remove outer braces
+              content = content.substr(1, content.size() - 2);
+              
+              size_t pos = 0;
+              while (pos < content.size()) {
+                // Find key start (after quote)
+                size_t key_start = content.find('"', pos);
+                if (key_start == std::string::npos) break;
+                
+                // Find key end
+                size_t key_end = content.find('"', key_start + 1);
+                if (key_end == std::string::npos) break;
+                
+                // Find colon
+                size_t colon = content.find(':', key_end);
+                if (colon == std::string::npos) break;
+                
+                // Find value start
+                size_t value_start = content.find('"', colon);
+                if (value_start == std::string::npos) break;
+                
+                // Find value end
+                size_t value_end = content.find('"', value_start + 1);
+                if (value_end == std::string::npos) break;
+                
+                // Extract key and value
+                std::string key = content.substr(key_start + 1, key_end - key_start - 1);
+                std::string value = content.substr(value_start + 1, value_end - value_start - 1);
+                
+                // Add to map
+                options[key] = value;
+                
+                // Move to next pair
+                pos = content.find(',', value_end);
+                if (pos == std::string::npos) break;
+                pos++;
+              }
+            } else {
+              SHERPA_ONNX_LOGE("Invalid JSON format in QNN config");
+            }
+            
+            // Log parsed options
+            SHERPA_ONNX_LOGE("QNN provider options count: %d", static_cast<int>(options.size()));
+            for (const auto& option : options) {
+              SHERPA_ONNX_LOGE("  %s: %s", option.first.c_str(), option.second.c_str());
+            }
+            
+            // Append QNN execution provider with options
+            sess_opts.AppendExecutionProvider("QNN", options);
+            SHERPA_ONNX_LOGE("QNN provider enabled successfully with JSON config");
+          } catch (const std::exception& e) {
+            SHERPA_ONNX_LOGE("Failed to configure QNN provider: %s. Fallback to cpu!", e.what());
+          }
+        } else {
+          SHERPA_ONNX_LOGE("No QNN JSON config provided. Attempting to use default QNN configuration");
+          // If no JSON config, try with no options
+          try {
+            std::unordered_map<std::string, std::string> empty_options;
+            sess_opts.AppendExecutionProvider("QNN", empty_options);
+            SHERPA_ONNX_LOGE("QNN provider enabled with default configuration");
+          } catch (const std::exception& e) {
+            SHERPA_ONNX_LOGE("Failed to enable QNN provider with default config: %s. Fallback to cpu!", e.what());
+          }
+        }
+      } else {
+        SHERPA_ONNX_LOGE("QNN provider not available. Available providers: %s", os.str().c_str());
+      }
       break;
     }
   }

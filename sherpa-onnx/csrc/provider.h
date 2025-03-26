@@ -21,6 +21,7 @@ enum class Provider {
   kNNAPI = 4,     // NnapiExecutionProvider
   kTRT = 5,       // TensorRTExecutionProvider
   kDirectML = 6,  // DmlExecutionProvider
+  kQNN = 7,       // QNNExecutionProvider
 };
 
 /**

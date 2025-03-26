@@ -42,6 +42,8 @@ data class OfflineTtsModelConfig(
     var numThreads: Int = 1,
     var debug: Boolean = false,
     var provider: String = "cpu",
+    var qnnJsonConfig: String = "", // JSON string with QNN provider options
+    var deviceId: Int = 0, // Device ID for providers that support it (CUDA, TensorRT)
 )
 
 data class OfflineTtsConfig(
@@ -194,7 +196,10 @@ fun getOfflineTtsConfig(
     dictDir: String,
     ruleFsts: String,
     ruleFars: String,
-    numThreads: Int? = null
+    numThreads: Int? = null,
+    provider: String? = null,
+    qnnJsonConfig: String = "", // JSON string with QNN provider options
+    deviceId: Int = 0, // Device ID for providers that support it
 ): OfflineTtsConfig {
     // For Matcha TTS, please set
     // acousticModelName, vocoder
@@ -268,6 +273,9 @@ fun getOfflineTtsConfig(
         OfflineTtsKokoroModelConfig()
     }
 
+    // Determine actual provider
+    val actualProvider = if (qnnJsonConfig.isNotEmpty()) "qnn" else (provider ?: "cpu")
+
     return OfflineTtsConfig(
         model = OfflineTtsModelConfig(
             vits = vits,
@@ -275,7 +283,9 @@ fun getOfflineTtsConfig(
             kokoro = kokoro,
             numThreads = numberOfThreads,
             debug = true,
-            provider = "cpu",
+            provider = "qnn",
+            qnnJsonConfig = qnnJsonConfig,
+            deviceId = deviceId,
         ),
         ruleFsts = ruleFsts,
         ruleFars = ruleFars,

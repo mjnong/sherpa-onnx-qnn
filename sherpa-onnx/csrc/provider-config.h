@@ -64,9 +64,22 @@ struct TensorrtConfig {
   std::string ToString() const;
 };
 
+struct QnnConfig {
+  std::string json_config = "";  // JSON string with all QNN provider options
+  
+  QnnConfig(const std::string &json_config = "")
+      : json_config(json_config) {}
+  
+  void Register(ParseOptions *po);
+  bool Validate() const;
+  
+  std::string ToString() const;
+};
+
 struct ProviderConfig {
   TensorrtConfig trt_config;
   CudaConfig cuda_config;
+  QnnConfig qnn_config;
   std::string provider = "cpu";
   int32_t device = 0;
   // device only used for cuda and trt
@@ -75,10 +88,13 @@ struct ProviderConfig {
   ProviderConfig(const std::string &provider, int32_t device)
       : provider(provider), device(device) {}
   ProviderConfig(const TensorrtConfig &trt_config,
-                 const CudaConfig &cuda_config, const std::string &provider,
-                 int32_t device)
+                 const CudaConfig &cuda_config,
+                 const QnnConfig &qnn_config,
+                 const std::string &provider,
+                 int32_t device)  
       : trt_config(trt_config),
         cuda_config(cuda_config),
+        qnn_config(qnn_config),
         provider(provider),
         device(device) {}
 

@@ -171,6 +171,32 @@ static OfflineTtsConfig GetOfflineTtsConfig(JNIEnv *env, jobject config) {
   ans.model.provider = p;
   env->ReleaseStringUTFChars(s, p);
 
+  // Get deviceId for provider configuration
+  fid = env->GetFieldID(model_config_cls, "deviceId", "I");
+  if (fid != nullptr) {
+    int deviceId = env->GetIntField(model, fid);
+    ans.model.provider_config.device = deviceId;
+    SHERPA_ONNX_LOGE("Setting device ID: %d", deviceId);
+  }
+
+  // If provider is QNN, set up QNN provider configurations
+  if (ans.model.provider == "qnn") {
+    // First check if JSON config is provided
+    fid = env->GetFieldID(model_config_cls, "qnnJsonConfig", "Ljava/lang/String;");
+    if (fid != nullptr) {
+      s = (jstring)env->GetObjectField(model, fid);
+      if (s != nullptr) {
+        p = env->GetStringUTFChars(s, nullptr);
+        // Only set if not empty
+        if (p != nullptr && strlen(p) > 2) { // At least "{}"
+          ans.model.provider_config.qnn_config.json_config = p;
+          SHERPA_ONNX_LOGE("Using QNN JSON config: %s", p);
+        }
+        env->ReleaseStringUTFChars(s, p);
+      }
+    }
+  }
+
   // for ruleFsts
   fid = env->GetFieldID(cls, "ruleFsts", "Ljava/lang/String;");
   s = (jstring)env->GetObjectField(config, fid);
